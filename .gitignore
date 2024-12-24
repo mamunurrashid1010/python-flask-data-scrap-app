@@ -1,0 +1,49 @@
+# Byte-compiled / optimized / compiled Python files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+env/
+
+# Flask and Gunicorn files
+instance/
+*.log
+*.pot
+*.pyc
+*.pyo
+
+# Environment variables
+.env
+.env.*
+
+# Compiled Jupyter Notebook
+*.ipynb_checkpoints
+
+# macOS files
+.DS_Store
+
+# Windows files
+Thumbs.db
+Desktop.ini
+
+# Public files and temporary data
+/public/*.csv
+*.bak
+
+# Editor and IDE specific
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Pip dependency cache
+*.egg-info/
+pip-wheel-metadata/
+__pycache__/
+
+# System generated files
+*.lock
+*.tmp
