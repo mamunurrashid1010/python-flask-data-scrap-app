@@ -1,137 +1,106 @@
-# Data Scraping Flask API
+# Flask Data Scraping API
 
-This project is a Flask-based API for scraping auction data from the [Commonwealth Auctions](https://www.commonwealthauctions.com/all-auctions) website and saving it into a CSV file. The API also includes functionality to clear previously scraped files from the public directory.
+This project is a **Flask-based API** for scraping auction data from websites and sending the extracted data as CSV files to a specified API endpoint. It uses **Selenium** for web scraping and **BeautifulSoup** for parsing HTML.
 
 ## Features
+- Web scraping auction data from:
+  - https://www.commonwealthauctions.com/all-auctions
+  - https://www.re-auctions.com/Auction-Schedule
+  - https://sullivan-auctioneers.com/calendar/
+  - https://auctionsnewengland.com/Auctions.php
+  - https://patriotauctioneers.com/auction-results/
+  - https://apg-online.com/auction-schedule/
+  - https://www.harmonlawoffices.com/auctions
+  - https://www.baystateauction.com/auctions/state/ma
+  - https://www.harkinsrealestate.com/auction-schedule/
+  - https://paulmcinnis.com/auctions/all-auctions
+- Saves scraped data as CSV files.
+- Sends the CSV files to an external API.
+- Automatically deletes old files before generating new data.
+- Scheduled scraping every 2 hours using **APScheduler**.
 
-- Scrapes auction data from the Commonwealth Auctions website.
-- Saves the scraped data into a CSV file.
-- Deletes all files in the `public` directory before scraping new data.
-- Lightweight API with two endpoints:
-    - `/` (Home)
-    - `/api/get-data` (Scrape and save auction data)
+## Prerequisites
+- Python 3.7+
+- ChromeDriver (compatible with your installed Chrome version)
 
----
+## Dependencies
+The project uses the following Python packages:
+- `Flask`: Web framework for building the API.
+- `selenium`: Used to control the Chrome WebDriver.
+- `beautifulsoup4`: For parsing HTML content.
+- `apscheduler`: For scheduling periodic tasks.
+- `requests`: To send files to an external API.
+- `csv`: For working with CSV files.
 
-## Requirements
+## Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/mamunurrashid1010/python-flask-data-scrap-app.git
+   cd python-flask-data-scrap-app
+   ```
 
-- Python 3.7 or later
-- Flask
-- Selenium
-- BeautifulSoup4
-- Chrome WebDriver
+2. Create a virtual environment (optional but recommended):
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate  # On Windows use: venv\Scripts\activate
+   ```
 
-### Python Packages
-- `flask`
-- `selenium`
-- `beautifulsoup4`
-- `chromedriver-autoinstaller` (optional, for easier WebDriver setup)
+3. Install the required packages:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
----
+4. Download and set up ChromeDriver:
+  - Ensure `chromedriver` is in your system `PATH`.
+  - Alternatively, specify its path in your script if necessary.
 
-## Setup Instructions
-
-### 1. Clone the Repository
-```bash
-git clone <repository-url>
-cd <repository-folder>
-```
-
-### 2. Create a Virtual Environment
-```bash
-python -m venv venv
-```
-
-### 3. Activate the Virtual Environment
-#### On Windows:
-```bash
-venv\Scripts\activate
-```
-#### On Mac/Linux:
-```bash
-source venv/bin/activate
-```
-
-### 4. Install Dependencies
-```bash
-pip install flask selenium beautifulsoup4 chromedriver-autoinstaller
-```
-
----
-
-## Run the Application
-
-1. Ensure the Chrome browser is installed on your system.
-2. Start the Flask app:
+## Usage
+1. Start the Flask server:
    ```bash
    python app.py
    ```
-3. The app will be accessible at `http://localhost:5000`.
+2. The API will be available at `http://0.0.0.0:5000/`.
 
----
+### Endpoints
+- `GET /`
+  - Returns a welcome message.
+- `GET /api/get-data`
+  - Scrapes data from the auction websites, saves them to CSV files, and sends them to the specified API endpoint.
 
-## API Endpoints
+## Functions
+Scrapes data from multiple sites and saves it to a CSV file.
 
-### 1. Home Endpoint
-**URL:** `/`
+### `delete_public_directory_files(directory_path)`
+Deletes all files in the specified public directory.
 
-**Method:** `GET`
+### `schedule_get_data()`
+Runs the `get_data()` function within Flask's app context.
 
-**Description:** Returns a welcome message.
+### `send_csv_file(api_url, output_file_path)`
+Send the generated CSV file to the provided API endpoint (function implementation required).
 
-**Example Response:**
-```text
-Welcome to the data scraping Flask API
+## Scheduler
+The script uses **APScheduler** to run the scraping process every 2 hours automatically:
+```python
+scheduler.add_job(schedule_get_data, 'interval', hours=2)
 ```
 
-### 2. Data Scraping Endpoint
-**URL:** `/api/get-data`
-
-**Method:** `GET`
-
-**Description:** Deletes existing files in the `public` directory, scrapes auction data from Commonwealth Auctions, and saves it to a CSV file.
-
-**Example Response:**
-```json
-{
-  "delete_message": "All files in ./public have been deleted.",
-  "scrape_message": "Data saved to ./public/commonwealthauctions.com.csv"
-}
+## Deployment
+To run the Flask server in production, consider using **Gunicorn** or **uWSGI**:
+```bash
+pip install gunicorn
 ```
-
----
-
-## Directory Structure
+Run with:
+```bash
+gunicorn -w 4 app:app
 ```
-project-directory/
-  |-- app.py                # Main application file
-  |-- venv/                 # Virtual environment directory
-  |-- public/               # Directory for storing CSV files
-  |-- requirements.txt      # (Optional) Dependency list
-```
-
----
 
 ## Notes
-
-- **Headless Chrome**: The application uses Chrome in headless mode for scraping. Ensure `chromedriver` matches your Chrome version.
-- **Error Handling**: Basic error handling is implemented for missing directories and failed deletions.
-- **Execution Policy on Windows**: If you encounter errors activating the virtual environment, update the execution policy:
-  ```powershell
-  Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-  ```
-- **Sleep Time**: Adjust the `time.sleep(5)` in the scraping function if the page load time is insufficient.
-
----
-
-## Future Enhancements
-
-- Implement better error handling and logging.
-- Convert the project into a Dockerized application.
-- Use `WebDriverWait` instead of `time.sleep` for dynamic content loading.
-
----
+- Ensure `chromedriver` is compatible with the version of Chrome installed on your machine.
+- Adjust `time.sleep(5)` or use `WebDriverWait` for better handling of dynamic content.
+- Ensure proper error handling and logging for production use.
 
 ## License
+This project is licensed under the MIT License.
 
-This project is licensed under the [MIT License](LICENSE).
+
