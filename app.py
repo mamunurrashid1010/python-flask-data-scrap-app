@@ -8,34 +8,46 @@ import os
 import time
 import requests
 
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
 app = Flask(__name__)
 
 # API endpoint to home
 @app.route('/')
 def index():
-    return "Welcom to the data scrapping flask api";
+    return "Welcome to the auction data scrapping flask api";
+
+
+# Flask route to get website wise data. (param: site_name)
+@app.route('/api/site/<site_name>/get-data', methods=['GET'])
+def get_website_data(site_name):
+    get_data_website_wise(site_name)
+    return "Website wise data get successfully"
+
 
 # Flask route to get scrap data
 @app.route('/api/get-data', methods=['GET'])
 
+# scrap data from all website
 def get_data():
     public_directory_path = './public'
+    api_url = "https://bostonauction.iconicsolutionsbd.com/api/file/upload"
 
     # get data from commonwealthauctions
     url = 'https://www.commonwealthauctions.com/all-auctions'
     output_file_path = os.path.join(public_directory_path, 'commonwealthauctions.com.csv')
     delete_public_directory_files(public_directory_path)
     commonwealthauctions_scrape_data(url, output_file_path)
-    api_url = "https://bostonauction.iconicsolutionsbd.com/api/file/upload"
     if os.path.isfile(output_file_path):
         send_csv_file(api_url, output_file_path)
 
-    # get data from re-aution
+    # get data from re-auctions
     url = 'https://www.re-auctions.com/Auction-Schedule'
     output_file_path = os.path.join(public_directory_path, 'reauctions.csv')
     delete_public_directory_files(public_directory_path)
     re_auctions_scrape_data(url, output_file_path)
-    api_url = "https://bostonauction.iconicsolutionsbd.com/api/file/upload"
     if os.path.isfile(output_file_path):
         send_csv_file(api_url, output_file_path)
 
@@ -45,7 +57,6 @@ def get_data():
     output_file_path = os.path.join(public_directory_path, 'sullivan_auctioneers.csv')
     delete_public_directory_files(public_directory_path)
     sullivan_auctioneers_scrape_data(url, output_file_path)
-    api_url = "https://bostonauction.iconicsolutionsbd.com/api/file/upload"
     if os.path.isfile(output_file_path):
         send_csv_file(api_url, output_file_path)
 
@@ -54,7 +65,6 @@ def get_data():
     output_file_path = os.path.join(public_directory_path, 'auctionsnewengland.csv')
     delete_public_directory_files(public_directory_path)
     auctionsnewengland_scrape_data(url, output_file_path)
-    api_url = "https://bostonauction.iconicsolutionsbd.com/api/file/upload"
     if os.path.isfile(output_file_path):
         send_csv_file(api_url, output_file_path)
 
@@ -63,7 +73,6 @@ def get_data():
     output_file_path = os.path.join(public_directory_path, 'patriotauctioneers.csv')
     delete_public_directory_files(public_directory_path)
     patriot_auctioneers_scrape_data(url, output_file_path)
-    api_url = "https://bostonauction.iconicsolutionsbd.com/api/file/upload"
     if os.path.isfile(output_file_path):
         send_csv_file(api_url, output_file_path)
 
@@ -72,7 +81,6 @@ def get_data():
     output_file_path = os.path.join(public_directory_path, 'apgonline.csv')
     delete_public_directory_files(public_directory_path)
     apg_online_scrape_data(url, output_file_path)
-    api_url = "https://bostonauction.iconicsolutionsbd.com/api/file/upload"
     if os.path.isfile(output_file_path):
         send_csv_file(api_url, output_file_path)
 
@@ -81,7 +89,6 @@ def get_data():
     output_file_path = os.path.join(public_directory_path, 'harmonlawoffices.csv')
     delete_public_directory_files(public_directory_path)
     harmonlaw_scrape_data(url, output_file_path)
-    api_url = "https://bostonauction.iconicsolutionsbd.com/api/file/upload"
     if os.path.isfile(output_file_path):
         send_csv_file(api_url, output_file_path)
 
@@ -90,7 +97,6 @@ def get_data():
     output_file_path = os.path.join(public_directory_path, 'baystateauction.csv')
     delete_public_directory_files(public_directory_path)
     baystateauction_scrape_data(url, output_file_path)
-    api_url = "https://bostonauction.iconicsolutionsbd.com/api/file/upload"
     if os.path.isfile(output_file_path):
         send_csv_file(api_url, output_file_path)
 
@@ -99,7 +105,6 @@ def get_data():
     output_file_path = os.path.join(public_directory_path, 'harkinsrealestate.csv')
     delete_public_directory_files(public_directory_path)
     harkinsrealestate_scrape_data(url, output_file_path)
-    api_url = "https://bostonauction.iconicsolutionsbd.com/api/file/upload"
     if os.path.isfile(output_file_path):
         send_csv_file(api_url, output_file_path)
 
@@ -108,15 +113,134 @@ def get_data():
     output_file_path = os.path.join(public_directory_path, 'paulmcinnis.csv')
     delete_public_directory_files(public_directory_path)
     paulmcinnis_scrape_data(url, output_file_path)
-    api_url = "https://bostonauction.iconicsolutionsbd.com/api/file/upload"
     if os.path.isfile(output_file_path):
         send_csv_file(api_url, output_file_path)
 
 
-    print ("done")
+    # get data from auctionsri
+    url = 'http://auctionsri.com/scripts/auctions.asp?category=R'
+    output_file_path = os.path.join(public_directory_path, 'auctionsri.csv')
+    delete_public_directory_files(public_directory_path)
+    auctionsri_scrape_data(url, output_file_path)
+    if os.path.isfile(output_file_path):
+        send_csv_file(api_url, output_file_path)
+
+    # get data from amgauction
+    url = 'https://www.amgauction.com/auctions'
+    output_file_path = os.path.join(public_directory_path, 'amgauction.csv')
+    delete_public_directory_files(public_directory_path)
+    amgauction_scrape_data(url, output_file_path)
+    if os.path.isfile(output_file_path):
+        send_csv_file(api_url, output_file_path)
+
+
+    print ("All website scrapping done")
     return jsonify({
         "message": "success",
     })
+
+# function for get scrap data website wise
+def get_data_website_wise(site_name):
+    public_directory_path = './public'
+    api_url = "https://bostonauction.iconicsolutionsbd.com/api/file/upload"
+
+    if site_name == "commonwealthauctions":
+        url = 'https://www.commonwealthauctions.com/all-auctions'
+        output_file_path = os.path.join(public_directory_path, 'commonwealthauctions.com.csv')
+        delete_public_directory_files(public_directory_path)
+        commonwealthauctions_scrape_data(url, output_file_path)
+        if os.path.isfile(output_file_path):
+            send_csv_file(api_url, output_file_path)
+
+    elif site_name == "re-auctions":
+        url = 'https://www.re-auctions.com/Auction-Schedule'
+        output_file_path = os.path.join(public_directory_path, 'reauctions.csv')
+        delete_public_directory_files(public_directory_path)
+        re_auctions_scrape_data(url, output_file_path)
+        if os.path.isfile(output_file_path):
+            send_csv_file(api_url, output_file_path)
+
+    elif site_name == "sullivan-auctioneers":
+        url = 'https://sullivan-auctioneers.com/calendar/'
+        output_file_path = os.path.join(public_directory_path, 'sullivan_auctioneers.csv')
+        delete_public_directory_files(public_directory_path)
+        sullivan_auctioneers_scrape_data(url, output_file_path)
+        if os.path.isfile(output_file_path):
+            send_csv_file(api_url, output_file_path)
+
+    elif site_name == "auctionsnewengland":
+        url = 'https://auctionsnewengland.com/Auctions.php'
+        output_file_path = os.path.join(public_directory_path, 'auctionsnewengland.csv')
+        delete_public_directory_files(public_directory_path)
+        auctionsnewengland_scrape_data(url, output_file_path)
+        if os.path.isfile(output_file_path):
+            send_csv_file(api_url, output_file_path)
+
+    elif site_name == "patriotauctioneers":
+        url = 'https://patriotauctioneers.com/auction-results/'
+        output_file_path = os.path.join(public_directory_path, 'patriotauctioneers.csv')
+        delete_public_directory_files(public_directory_path)
+        patriot_auctioneers_scrape_data(url, output_file_path)
+        if os.path.isfile(output_file_path):
+            send_csv_file(api_url, output_file_path)
+
+    elif site_name == "apg-online":
+        url = 'https://apg-online.com/auction-schedule/'
+        output_file_path = os.path.join(public_directory_path, 'apgonline.csv')
+        delete_public_directory_files(public_directory_path)
+        apg_online_scrape_data(url, output_file_path)
+        if os.path.isfile(output_file_path):
+            send_csv_file(api_url, output_file_path)
+
+    elif site_name == "harmonlawoffices":
+        url = 'https://www.harmonlawoffices.com/auctions'
+        output_file_path = os.path.join(public_directory_path, 'harmonlawoffices.csv')
+        delete_public_directory_files(public_directory_path)
+        harmonlaw_scrape_data(url, output_file_path)
+        if os.path.isfile(output_file_path):
+            send_csv_file(api_url, output_file_path)
+
+    elif site_name == "baystateauction":
+        url = 'https://www.baystateauction.com/auctions/state/ma'
+        output_file_path = os.path.join(public_directory_path, 'baystateauction.csv')
+        delete_public_directory_files(public_directory_path)
+        baystateauction_scrape_data(url, output_file_path)
+        if os.path.isfile(output_file_path):
+            send_csv_file(api_url, output_file_path)
+
+    elif site_name == "harkinsrealestate":
+        url = 'https://www.harkinsrealestate.com/auction-schedule/'
+        output_file_path = os.path.join(public_directory_path, 'harkinsrealestate.csv')
+        delete_public_directory_files(public_directory_path)
+        harkinsrealestate_scrape_data(url, output_file_path)
+        if os.path.isfile(output_file_path):
+            send_csv_file(api_url, output_file_path)
+
+    elif site_name == "paulmcinnis":
+        url = 'https://paulmcinnis.com/auctions/all-auctions'
+        output_file_path = os.path.join(public_directory_path, 'paulmcinnis.csv')
+        delete_public_directory_files(public_directory_path)
+        paulmcinnis_scrape_data(url, output_file_path)
+        if os.path.isfile(output_file_path):
+            send_csv_file(api_url, output_file_path)
+
+    elif site_name == "auctionsri":
+        url = 'http://auctionsri.com/scripts/auctions.asp?category=R'
+        output_file_path = os.path.join(public_directory_path, 'auctionsri.csv')
+        delete_public_directory_files(public_directory_path)
+        auctionsri_scrape_data(url, output_file_path)
+        if os.path.isfile(output_file_path):
+            send_csv_file(api_url, output_file_path)
+
+    elif site_name == "amgauction":
+        url = 'https://www.amgauction.com/auctions'
+        output_file_path = os.path.join(public_directory_path, 'amgauction.csv')
+        delete_public_directory_files(public_directory_path)
+        amgauction_scrape_data(url, output_file_path)
+        if os.path.isfile(output_file_path):
+            send_csv_file(api_url, output_file_path)
+
+
 
 # send data to the endpoint- https://bostonauction.iconicsolutionsbd.com/api/file/upload
 def send_csv_file(api_url, file_path):
@@ -149,7 +273,7 @@ def commonwealthauctions_scrape_data(url, output_file_path):
         driver.get(url)
 
         # Wait for the content to load (adjust the sleep time as needed or use WebDriverWait)
-        time.sleep(5)
+        time.sleep(10)
 
         # Parse the page source with BeautifulSoup
         soup = BeautifulSoup(driver.page_source, 'html.parser')
@@ -212,7 +336,7 @@ def re_auctions_scrape_data(url, output_file_path):
         driver.get(url)
 
         # Wait for the content to load (adjust the sleep time as needed or use WebDriverWait)
-        time.sleep(5)
+        time.sleep(10)
 
         # Parse the page source with BeautifulSoup
         soup = BeautifulSoup(driver.page_source, 'html.parser')
@@ -284,7 +408,7 @@ def sullivan_auctioneers_scrape_data(url, output_file_path):
         driver.get(url)
 
         # Wait for the content to load (adjust the sleep time as needed or use WebDriverWait)
-        time.sleep(5)
+        time.sleep(10)
 
         # Parse the page source with BeautifulSoup
         soup = BeautifulSoup(driver.page_source, 'html.parser')
@@ -347,7 +471,7 @@ def auctionsnewengland_scrape_data(url, output_file_path):
         driver.get(url)
 
         # Allow time for the content to load
-        time.sleep(5)  # Consider using WebDriverWait for better reliability
+        time.sleep(10)  # Consider using WebDriverWait for better reliability
 
         # Parse the page source using BeautifulSoup
         soup = BeautifulSoup(driver.page_source, 'html.parser')
@@ -408,7 +532,7 @@ def patriot_auctioneers_scrape_data(url, output_file_path):
         driver.get(url)
 
         # Wait for the content to load
-        time.sleep(5)  # Increase if necessary
+        time.sleep(10)  # Increase if necessary
 
         # Parse the page source with BeautifulSoup
         soup = BeautifulSoup(driver.page_source, 'html.parser')
@@ -461,7 +585,7 @@ def apg_online_scrape_data(url, output_file_path):
     try:
         driver = webdriver.Chrome(options=chrome_options)
         driver.get(url)
-        time.sleep(5)  # Adjust wait time as needed
+        time.sleep(10)  # Adjust wait time as needed
 
         soup = BeautifulSoup(driver.page_source, 'html.parser')
         properties = soup.find_all('article', class_='property')
@@ -718,6 +842,135 @@ def paulmcinnis_scrape_data(url, output_file_path):
 
 
 
+# auctionsri function
+def auctionsri_scrape_data(url, output_file_path):
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+
+    driver = webdriver.Chrome(options=chrome_options)
+
+    try:
+        driver.get(url)
+
+        # Wait for the table to load
+        WebDriverWait(driver, 15).until(
+            EC.presence_of_element_located((By.TAG_NAME, "table"))
+        )
+
+        soup = BeautifulSoup(driver.page_source, 'html.parser')
+
+        # Get all tables
+        tables = soup.find_all('table')
+#         if len(tables) < 3:
+#             driver.quit()
+#             print("The page does not contain three tables.")
+#             return "The page does not contain three tables."
+#         print(f"{tables[4]}")
+
+        table = tables[4]  # Select the 3rd table (index 2)
+
+        # Headers for CSV
+        headers = ['date', 'time', 'address', 'city_state', 'book_page', 'status', 'deposit']
+        data = []
+
+        # Extract all rows (skip header row)
+        rows = table.find_all('tr')[1:]
+
+        for tr in rows:
+            cells = tr.find_all('td')
+            if len(cells) >= 9:
+                date = cells[0].get_text(strip=True)
+                time = cells[2].get_text(strip=True)
+
+                # Extract address (check if it contains a link)
+                address_link = cells[4].find('a')
+                address = address_link.text.strip() if address_link else cells[4].get_text(strip=True)
+
+                city_state = cells[5].get_text(strip=True)
+                book_page = cells[6].get_text(strip=True)
+                status = cells[7].get_text(strip=True)
+                deposit = cells[8].get_text(strip=True)
+
+                data.append([date, time, address, city_state, book_page, status, deposit])
+
+        # Ensure the output directory exists
+        os.makedirs(os.path.dirname(output_file_path), exist_ok=True)
+
+        # Write to CSV file
+        with open(output_file_path, 'w', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file)
+            writer.writerow(headers)
+            writer.writerows(data)
+
+        driver.quit()
+        return f"Data successfully saved to {output_file_path}"
+
+    except Exception as e:
+        driver.quit()
+        return f"An error occurred: {str(e)}"
+
+
+# amgauction function
+def amgauction_scrape_data(url, output_file_path):
+    # Set up the Chrome WebDriver with headless mode
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+
+    try:
+        driver = webdriver.Chrome(options=chrome_options)
+        driver.get(url)
+
+        # Wait for the content to load
+        time.sleep(10)  # Increase if necessary
+
+        # Parse the page source with BeautifulSoup
+        soup = BeautifulSoup(driver.page_source, 'html.parser')
+
+        # Locate the auction event list
+        event_list = soup.find('div', class_='eventlist eventlist--upcoming')
+        if not event_list:
+            driver.quit()
+            return "Event list not found on the page."
+
+        # Use static headers for the CSV
+        headers = ['property_address', 'auction_date', 'short_description']
+
+        # Extract auction listings
+        data = []
+        for event in event_list.find_all('article', class_='eventlist-event'):
+            address_element = event.find('h1', class_='eventlist-title')
+            property_address = address_element.text.strip() if address_element else None
+
+            date_element = event.find('time', class_='event-date')
+            auction_date = date_element.text.strip() if date_element else None
+
+            desc_element = event.find('div', class_='eventlist-excerpt')
+            short_description = desc_element.text.strip() if desc_element else None
+
+            data.append([property_address, auction_date, short_description])
+
+        # Ensure the output directory exists
+        os.makedirs(os.path.dirname(output_file_path), exist_ok=True)
+
+        # Save data to CSV
+        with open(output_file_path, 'w', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file)
+            writer.writerow(headers)
+            writer.writerows(data)
+
+        driver.quit()
+        return f"Data saved to {output_file_path}"
+
+    except Exception as e:
+        return f"An error occurred: {str(e)}"
+
+
 
 # Function to delete files
 def delete_public_directory_files(directory_path):
@@ -743,7 +996,7 @@ def schedule_get_data():
 
 # Set up the scheduler
 scheduler = BackgroundScheduler()
-scheduler.add_job(schedule_get_data, 'interval', hours=2)  # Change 'minutes=1' to 'hours=1' for hourly execution
+scheduler.add_job(schedule_get_data, 'interval', hours=4)  # Change 'minutes=1' to 'hours=1' for hourly execution
 scheduler.start()
 
 

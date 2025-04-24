@@ -14,6 +14,8 @@ This project is a **Flask-based API** for scraping auction data from websites an
   - https://www.baystateauction.com/auctions/state/ma
   - https://www.harkinsrealestate.com/auction-schedule/
   - https://paulmcinnis.com/auctions/all-auctions
+  - http://auctionsri.com/scripts/auctions.asp?category=R
+  - https://www.amgauction.com/auctions
 - Saves scraped data as CSV files.
 - Sends the CSV files to an external API.
 - Automatically deletes old files before generating new data.
@@ -65,7 +67,9 @@ The project uses the following Python packages:
 - `GET /`
   - Returns a welcome message.
 - `GET /api/get-data`
-  - Scrapes data from the auction websites, saves them to CSV files, and sends them to the specified API endpoint.
+  - Scrapes all data from the auction websites, saves them to CSV files, and sends them to the specified API endpoint.
+- `GET /api/site/<site_name>/get-data`
+    - Scrapes data from the auction websites (website wise), saves them to CSV files, and sends them to the specified API endpoint.
 
 ## Functions
 Scrapes data from multiple sites and saves it to a CSV file.
